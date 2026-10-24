@@ -20,7 +20,8 @@ app.use(async (req, res, next) => {
     await connectDB();
     next();
   } catch (error) {
-    console.error("Database connection failed:", error.message);
+    console.error("MongoDB connection failed:", error.message);
+
     res.status(503).json({
       success: false,
       message: "Database connection unavailable.",
@@ -69,14 +70,21 @@ app.use((req, res) => {
   });
 });
 
-// Vercel serverless entry point
+// Export the Express app for Vercel
 module.exports = app;
 
-// Local development
+// Start a local server only during local development
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
 
-  app.listen(PORT, () => {
-    console.log(`BestXWorst server running on port ${PORT}`);
-  });
+  connectDB()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`BestXWorst server running on port ${PORT}`);
+      });
+    })
+    .catch((error) => {
+      console.error("Failed to start server:", error.message);
+      process.exitCode = 1;
+    });
 }
