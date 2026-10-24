@@ -1,9 +1,9 @@
+
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
-
 const articleRoutes = require("./routes/articleRoutes");
 const authRoutes = require("./routes/authRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
@@ -14,17 +14,16 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
-// Ensure the database is connected before handling requests.
+// Connect to MongoDB before handling API requests
 app.use(async (req, res, next) => {
   try {
     await connectDB();
     next();
   } catch (error) {
-    console.error("Database request failed:", error.message);
-
+    console.error("Database connection failed:", error.message);
     res.status(503).json({
       success: false,
-      message: "Database connection failed.",
+      message: "Database connection unavailable.",
     });
   }
 });
@@ -56,8 +55,7 @@ app.use((error, req, res, next) => {
     });
   }
 
-  console.error("API error:", error.message);
-
+  console.error(error);
   res.status(500).json({
     success: false,
     message: "Internal server error.",
@@ -71,7 +69,10 @@ app.use((req, res) => {
   });
 });
 
-// Local development only. Vercel imports the exported Express app.
+// Vercel serverless entry point
+module.exports = app;
+
+// Local development
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
 
@@ -79,5 +80,3 @@ if (require.main === module) {
     console.log(`BestXWorst server running on port ${PORT}`);
   });
 }
-
-module.exports = app;
