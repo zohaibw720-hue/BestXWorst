@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 let connectionPromise = null;
@@ -8,27 +7,28 @@ const connectDB = async () => {
     return mongoose.connection;
   }
 
-  if (!process.env.MONGO_URI) {
-    throw new Error("MONGO_URI is missing from environment variables.");
+  if (connectionPromise) {
+    return connectionPromise;
   }
 
-  if (!connectionPromise) {
-    connectionPromise = mongoose
-      .connect(process.env.MONGO_URI, {
-        dbName: "bestxworst",
-        serverSelectionTimeoutMS: 10000,
-      })
-      .then((connection) => {
-        console.log(
-          `MongoDB connected: ${connection.connection.host}`
-        );
-        return connection.connection;
-      })
-      .catch((error) => {
-        connectionPromise = null;
-        throw error;
-      });
+  if (!process.env.MONGO_URI) {
+    throw new Error("MONGO_URI is missing from environment variables");
   }
+
+  connectionPromise = mongoose
+    .connect(process.env.MONGO_URI, {
+      dbName: "bestxworst",
+      serverSelectionTimeoutMS: 10000,
+    })
+    .then(() => {
+      console.log("MongoDB connected successfully");
+      return mongoose.connection;
+    })
+    .catch((error) => {
+      connectionPromise = null;
+      console.error("MongoDB connection failed:", error.message);
+      throw error;
+    });
 
   return connectionPromise;
 };
