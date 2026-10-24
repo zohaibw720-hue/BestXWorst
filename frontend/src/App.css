@@ -1,0 +1,273 @@
+
+:root {
+  --ink: #20221f;
+  --muted: #74766f;
+  --paper: #f5f3ee;
+  --white: #ffffff;
+  --line: #e2e0d9;
+  --red: #e7473f;
+  --dark: #191b19;
+
+  --shadow-soft: 0 16px 45px rgb(25 27 25 / 7%);
+  --shadow-card: 0 20px 55px rgb(25 27 25 / 11%);
+  --radius-small: 2px;
+}
+
+/* =========================
+   PRIMARY BUTTON
+========================= */
+
+.button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 21px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-small);
+  background: var(--ink);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.button-primary:hover {
+  transform: translateY(-2px);
+  border-color: var(--red);
+  background: var(--red);
+}
+
+.button-primary:active {
+  transform: translateY(0);
+}
+
+.button-primary svg {
+  flex: 0 0 auto;
+}
+
+/* =========================
+   SECONDARY BUTTON
+========================= */
+
+.button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.button-secondary:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--white);
+}
+
+/* =========================
+   TEXT LINKS
+========================= */
+
+.text-link {
+  text-decoration: none;
+}
+
+/* =========================
+   COMPARISON CARD
+========================= */
+
+.comparison-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--white);
+  box-shadow: var(--shadow-soft);
+  animation: comparison-card-enter 0.45s ease both;
+  animation-delay: calc(var(--comparison-index, 0) * 80ms);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.comparison-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+
+.comparison-card-image {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: var(--paper);
+}
+
+.comparison-card-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.comparison-card:hover .comparison-card-image img {
+  transform: scale(1.04);
+}
+
+.comparison-card-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 24px;
+}
+
+.comparison-card-label {
+  color: var(--red);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.comparison-card-content h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(20px, 2vw, 26px);
+  line-height: 1.2;
+}
+
+.comparison-card-content p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.comparison-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.comparison-card-link:hover {
+  color: var(--red);
+}
+
+.comparison-card-link svg {
+  flex-shrink: 0;
+}
+
+/* =========================
+   COMPARISON CARD ANIMATION
+========================= */
+
+@keyframes comparison-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   GLOBAL INTERACTION STYLES
+========================= */
+
+a,
+button,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+::placeholder {
+  color: #96978f;
+  opacity: 1;
+}
+
+/* =========================
+   REDUCED MOTION ACCESSIBILITY
+========================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .comparison-card {
+    animation: none;
+    transition: none;
+  }
+
+  .comparison-card:hover {
+    transform: none;
+  }
+
+  .comparison-card-image img {
+    transition: none;
+  }
+
+  .comparison-card:hover .comparison-card-image img {
+    transform: none;
+  }
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 600px) {
+  .button-primary,
+  .button-secondary {
+    min-height: 45px;
+    padding-inline: 16px;
+  }
+
+  .comparison-card-content {
+    gap: 12px;
+    padding: 18px;
+  }
+}
