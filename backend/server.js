@@ -11,11 +11,23 @@ const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
-// API status
+// Connect to MongoDB before handling API requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("MongoDB connection failed:", error.message);
+    res.status(503).json({
+      success: false,
+      message: "Database connection failed.",
+    });
+  }
+});
+
 app.get("/", (req, res) => {
   res.json({
     success: true,
@@ -30,19 +42,11 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// Authentication API
 app.use("/api/auth", authRoutes);
-
-// Articles API
 app.use("/api/articles", articleRoutes);
-
-// Cloudinary image uploads API
 app.use("/api/upload", uploadRoutes);
-
-// Contact form API
 app.use("/api/contact", contactRoutes);
 
-// Handle invalid JSON requests
 app.use((error, req, res, next) => {
   if (error instanceof SyntaxError && error.status === 400 && "body" in error) {
     return res.status(400).json({
@@ -51,10 +55,13 @@ app.use((error, req, res, next) => {
     });
   }
 
-  next(error);
+  console.error(error);
+  res.status(500).json({
+    success: false,
+    message: "Internal server error.",
+  });
 });
 
-// Unknown API routes
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -62,23 +69,21 @@ app.use((req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+// Local development only
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
 
-const startServer = async () => {
-  try {
-    await connectDB();
-
-    app.listen(PORT, () => {
-      console.log(`BestXWorst server running on port ${PORT}`);
+  connectDB()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`BestXWorst server running on port ${PORT}`);
+      });
+    })
+    .catch((error) => {
+      console.error("Failed to start BestXWorst server:", error.message);
+      process.exitCode = 1;
     });
-  } catch (error) {
-    console.error(
-      "Failed to start BestXWorst server:",
-      error.message
-    );
+}
 
-    process.exit(1);
-  }
-};
-
-startServer();
+// Vercel serverless entry point
+module.exports = app;
