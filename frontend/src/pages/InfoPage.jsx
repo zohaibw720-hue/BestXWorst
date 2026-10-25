@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -16,10 +15,13 @@ import Header from "../components/layout/Header";
 import Footer from "../components/home/Footer";
 import "./InfoPage.css";
 
+// Replace this placeholder with your real, working contact email.
 const CONTACT_EMAIL = "contact@example.com";
 
+// Uses the same production API base URL as the rest of the frontend.
 const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api"
+  import.meta.env.VITE_API_URL ||
+  "https://bestxworst-backend.vercel.app/api"
 ).replace(/\/+$/, "");
 
 const INITIAL_FORM_DATA = {
@@ -517,7 +519,7 @@ export function ContactPage() {
     const payload = {
       name: formData.name.trim(),
       email: formData.email.trim(),
-      subject: formData.subject,
+      subject: formData.subject.trim(),
       message: formData.message.trim(),
     };
 
@@ -537,10 +539,13 @@ export function ContactPage() {
       return;
     }
 
-    if (payload.email.length > 254) {
+    if (
+      payload.email.length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)
+    ) {
       setStatus({
         type: "error",
-        message: "Please use a valid email address.",
+        message: "Please enter a valid email address.",
       });
       return;
     }
@@ -565,13 +570,7 @@ export function ContactPage() {
         body: JSON.stringify(payload),
       });
 
-      let result = null;
-
-      try {
-        result = await response.json();
-      } catch {
-        result = null;
-      }
+      const result = await response.json().catch(() => null);
 
       if (!response.ok || !result?.success) {
         throw new Error(
@@ -586,9 +585,7 @@ export function ContactPage() {
           result.message || "Your message has been sent successfully.",
       });
 
-      setFormData({
-        ...INITIAL_FORM_DATA,
-      });
+      setFormData({ ...INITIAL_FORM_DATA });
     } catch (error) {
       setStatus({
         type: "error",
@@ -639,7 +636,8 @@ export function ContactPage() {
                   className="info-inline-link"
                   href={`mailto:${CONTACT_EMAIL}?subject=BestXWorst%20Enquiry`}
                 >
-                  {CONTACT_EMAIL} <ArrowRight size={17} aria-hidden="true" />
+                  {CONTACT_EMAIL}
+                  <ArrowRight size={17} aria-hidden="true" />
                 </a>
               </div>
             </div>

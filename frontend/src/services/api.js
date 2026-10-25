@@ -1,9 +1,23 @@
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL ||
+  "https://bestxworst-backend.vercel.app/api"
+).replace(/\/+$/, "");
 
 async function apiRequest(endpoint, options = {}) {
-  const token = localStorage.getItem("adminToken");
+  const normalizedEndpoint = endpoint.startsWith("/")
+    ? endpoint
+    : `/${endpoint}`;
+
+  let token = null;
+
+  try {
+    if (typeof window !== "undefined") {
+      token = window.localStorage.getItem("adminToken");
+    }
+  } catch {
+    // Continue without a token if localStorage is unavailable.
+  }
 
   const headers = {
     ...(options.body ? { "Content-Type": "application/json" } : {}),
@@ -11,15 +25,41 @@ async function apiRequest(endpoint, options = {}) {
     ...options.headers,
   };
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  let response;
 
-  const result = await response.json().catch(() => ({}));
+  try {
+    response = await fetch(`${API_BASE_URL}${normalizedEndpoint}`, {
+      ...options,
+      headers,
+    });
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw error;
+    }
+
+    throw new Error(
+      "Unable to connect to the server. Please check your internet connection and try again.",
+      { cause: error }
+    );
+  }
+
+  let result;
+
+  try {
+    result = await response.json();
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw error;
+    }
+
+    result = {};
+  }
 
   if (!response.ok || result.success === false) {
-    throw new Error(result.message || "Request failed. Please try again.");
+    throw new Error(
+      result.message ||
+        `Request failed with status ${response.status}. Please try again.`
+    );
   }
 
   return result;

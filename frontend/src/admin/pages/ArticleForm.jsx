@@ -28,8 +28,16 @@ import {
 } from "lucide-react";
 import "../styles/ArticleForm.css";
 
-const API_URL = "http://localhost:5000/api/articles";
-const UPLOAD_URL = "http://localhost:5000/api/upload/image";
+// Production API configuration.
+// VITE_API_URL should be:
+// https://bestxworst-backend.vercel.app/api
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL ||
+  "https://bestxworst-backend.vercel.app/api"
+).replace(/\/+$/, "");
+
+const API_URL = `${API_BASE_URL}/articles`;
+const UPLOAD_URL = `${API_BASE_URL}/upload/image`;
 
 const initialForm = {
   title: "",
@@ -80,12 +88,22 @@ function getArticleArray(data) {
 }
 
 function hasReadableContent(html = "") {
-  const text = html
+  const text = String(html)
     .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
     .trim();
 
   return Boolean(text);
+}
+
+function getErrorMessage(data, fallback) {
+  if (typeof data?.message === "string" && data.message.trim()) {
+    return data.message;
+  }
+
+  return fallback;
 }
 
 function ArticleForm() {
@@ -97,7 +115,7 @@ function ArticleForm() {
 
   const [form, setForm] = useState(initialForm);
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
-  const [loading, setLoading] = useState(isEditing);
+  const [loading, setLoading] = useState(Boolean(id));
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState("");
@@ -131,8 +149,12 @@ function ArticleForm() {
     },
   });
 
+  // Load an existing article for editing.
+  // Creating a new article does not require an API loading request.
   useEffect(() => {
-    if (!isEditing) return undefined;
+    if (!isEditing) {
+      return undefined;
+    }
 
     const controller = new AbortController();
 
@@ -164,9 +186,9 @@ function ArticleForm() {
 
         const data = await response.json().catch(() => ({}));
 
-        if (!response.ok) {
+        if (!response.ok || data.success === false) {
           throw new Error(
-            data.message || "Articles load nahi ho sake."
+            getErrorMessage(data, "Articles load nahi ho sake.")
           );
         }
 
@@ -212,14 +234,13 @@ function ArticleForm() {
     return () => controller.abort();
   }, [id, isEditing, navigate, loadAttempt]);
 
-  // Existing article ka content editor mein load karein.
+  // Load fetched content into TipTap without triggering onUpdate.
   useEffect(() => {
     if (!editor || loading || !isEditing) return;
 
     editor.commands.setContent(form.content || "", {
       emitUpdate: false,
     });
-    // Run when the article is initially loaded or explicitly reloaded.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, loading, isEditing, id, loadAttempt]);
 
@@ -279,6 +300,8 @@ function ArticleForm() {
         .extendMarkRange("link")
         .setLink({ href: url })
         .run();
+
+      setError("");
     } catch {
       setError("Valid URL enter karein, jaise https://example.com");
     }
@@ -287,7 +310,7 @@ function ArticleForm() {
   async function handleImageUpload(event) {
     const file = event.target.files?.[0];
 
-    // Same image ko dobara select karne par bhi change event fire ho.
+    // Allow selecting the same file again.
     event.target.value = "";
 
     if (!file) return;
@@ -339,9 +362,10 @@ function ArticleForm() {
         return;
       }
 
-      if (!response.ok || !data.url) {
+      // Backend returns { success, message, url, publicId }.
+      if (!response.ok || data.success === false || !data.url) {
         throw new Error(
-          data.message || "Image upload nahi ho saki."
+          getErrorMessage(data, "Image upload nahi ho saki.")
         );
       }
 
@@ -349,8 +373,12 @@ function ArticleForm() {
         ...current,
         featuredImage: data.url,
       }));
+
+      setError("");
     } catch (err) {
-      setError(err.message || "Image upload mein error aaya.");
+      setError(
+        err.message || "Image upload mein error aaya."
+      );
     } finally {
       setUploadingImage(false);
     }
@@ -361,6 +389,7 @@ function ArticleForm() {
       ...current,
       featuredImage: "",
     }));
+
     setError("");
   }
 
@@ -381,8 +410,23 @@ function ArticleForm() {
       return;
     }
 
+    if (title.length > 200) {
+      setError("Article title 200 characters se zyada nahi ho sakta.");
+      return;
+    }
+
     if (!slug) {
       setError("Valid URL slug enter karein.");
+      return;
+    }
+
+    if (!excerpt) {
+      setError("Article excerpt required hai.");
+      return;
+    }
+
+    if (excerpt.length > 500) {
+      setError("Article excerpt 500 characters se zyada nahi ho sakta.");
       return;
     }
 
@@ -444,10 +488,12 @@ function ArticleForm() {
         return;
       }
 
-      if (!response.ok) {
+      if (!response.ok || data.success === false) {
         throw new Error(
-          data.message ||
+          getErrorMessage(
+            data,
             "Article save nahi ho saka. Dobara try karein."
+          )
         );
       }
 
@@ -461,7 +507,9 @@ function ArticleForm() {
         },
       });
     } catch (err) {
-      setError(err.message || "Server se connection nahi ho saka.");
+      setError(
+        err.message || "Server se connection nahi ho saka."
+      );
     } finally {
       setSaving(false);
     }
@@ -594,7 +642,9 @@ function ArticleForm() {
                   ))}
                 </select>
 
-                <small>Article ki main subject category select karein.</small>
+                <small>
+                  Article ki main subject category select karein.
+                </small>
               </div>
 
               <div className="article-form-field">
@@ -634,7 +684,7 @@ function ArticleForm() {
             </div>
 
             <div className="article-form-field">
-              <label htmlFor="article-excerpt">Excerpt</label>
+              <label htmlFor="article-excerpt">Excerpt *</label>
 
               <textarea
                 id="article-excerpt"
@@ -644,6 +694,7 @@ function ArticleForm() {
                 placeholder="Write a short summary of your article..."
                 rows={3}
                 maxLength={500}
+                required
               />
 
               <small>
@@ -688,6 +739,7 @@ function ArticleForm() {
                 ) : (
                   <Upload size={17} />
                 )}
+
                 {uploadingImage ? "Uploading image..." : "Choose Image"}
               </button>
 
@@ -906,8 +958,8 @@ function ArticleForm() {
 
               <small>
                 Text select karein aur toolbar se formatting apply karein.
-                Purane Markdown articles ko editor mein kholne se pehle
-                unka format check karein.
+                Purane Markdown articles ko edit karne se pehle unka format
+                check karein.
               </small>
             </div>
           </section>

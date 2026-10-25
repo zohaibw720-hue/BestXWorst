@@ -7,42 +7,83 @@ import {
   CalendarDays,
   UserRound,
 } from "lucide-react";
+
 import { api } from "../services/api";
 import "./ArticleDetail.css";
 
-function renderInlineMarkdown(text) {
-  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g);
+/* =========================================================
+   INLINE MARKDOWN
+   ========================================================= */
+
+function renderInlineMarkdown(text = "") {
+  const parts = text.split(
+    /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g
+  );
 
   return parts.map((part, index) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={index}>{part.slice(2, -2)}</strong>;
+    if (
+      part.startsWith("**") &&
+      part.endsWith("**") &&
+      part.length > 4
+    ) {
+      return (
+        <strong key={index}>
+          {part.slice(2, -2)}
+        </strong>
+      );
     }
 
-    if (part.startsWith("*") && part.endsWith("*")) {
-      return <em key={index}>{part.slice(1, -1)}</em>;
+    if (
+      part.startsWith("*") &&
+      part.endsWith("*") &&
+      part.length > 2
+    ) {
+      return (
+        <em key={index}>
+          {part.slice(1, -1)}
+        </em>
+      );
     }
 
-    if (part.startsWith("`") && part.endsWith("`")) {
-      return <code key={index}>{part.slice(1, -1)}</code>;
+    if (
+      part.startsWith("`") &&
+      part.endsWith("`") &&
+      part.length > 2
+    ) {
+      return (
+        <code key={index}>
+          {part.slice(1, -1)}
+        </code>
+      );
     }
 
     return part;
   });
 }
 
-function renderMarkdown(content) {
-  const lines = (content || "").replace(/\r\n/g, "\n").split("\n");
+/* =========================================================
+   MARKDOWN CONTENT RENDERER
+   ========================================================= */
+
+function renderMarkdown(content = "") {
+  const lines = content
+    .replace(/\r\n/g, "\n")
+    .split("\n");
+
   const blocks = [];
   let paragraphLines = [];
   let listItems = [];
   let listType = null;
 
   function flushParagraph() {
-    if (paragraphLines.length) {
+    if (paragraphLines.length > 0) {
       const text = paragraphLines.join(" ").trim();
 
       if (text) {
-        blocks.push({ type: "paragraph", text });
+        blocks.push({
+          type: "paragraph",
+          text,
+        });
       }
 
       paragraphLines = [];
@@ -50,8 +91,12 @@ function renderMarkdown(content) {
   }
 
   function flushList() {
-    if (listItems.length) {
-      blocks.push({ type: listType, items: [...listItems] });
+    if (listItems.length > 0) {
+      blocks.push({
+        type: listType,
+        items: [...listItems],
+      });
+
       listItems = [];
       listType = null;
     }
@@ -73,27 +118,35 @@ function renderMarkdown(content) {
     if (headingMatch) {
       flushParagraph();
       flushList();
+
       blocks.push({
         type: "heading",
         level: headingMatch[1].length,
         text: headingMatch[2],
       });
+
       return;
     }
 
     if (unorderedMatch || orderedMatch) {
       flushParagraph();
 
-      const currentType = unorderedMatch ? "unordered" : "ordered";
+      const currentType = unorderedMatch
+        ? "unordered"
+        : "ordered";
 
       if (listType && listType !== currentType) {
         flushList();
       }
 
       listType = currentType;
+
       listItems.push(
-        unorderedMatch ? unorderedMatch[1] : orderedMatch[1]
+        unorderedMatch
+          ? unorderedMatch[1]
+          : orderedMatch[1]
       );
+
       return;
     }
 
@@ -108,8 +161,14 @@ function renderMarkdown(content) {
     if (block.type === "heading") {
       const text = renderInlineMarkdown(block.text);
 
-      if (block.level <= 2) return <h2 key={index}>{text}</h2>;
-      if (block.level === 3) return <h3 key={index}>{text}</h3>;
+      if (block.level <= 2) {
+        return <h2 key={index}>{text}</h2>;
+      }
+
+      if (block.level === 3) {
+        return <h3 key={index}>{text}</h3>;
+      }
+
       return <h4 key={index}>{text}</h4>;
     }
 
@@ -117,7 +176,9 @@ function renderMarkdown(content) {
       return (
         <ul key={index}>
           {block.items.map((item, itemIndex) => (
-            <li key={itemIndex}>{renderInlineMarkdown(item)}</li>
+            <li key={itemIndex}>
+              {renderInlineMarkdown(item)}
+            </li>
           ))}
         </ul>
       );
@@ -127,22 +188,35 @@ function renderMarkdown(content) {
       return (
         <ol key={index}>
           {block.items.map((item, itemIndex) => (
-            <li key={itemIndex}>{renderInlineMarkdown(item)}</li>
+            <li key={itemIndex}>
+              {renderInlineMarkdown(item)}
+            </li>
           ))}
         </ol>
       );
     }
 
-    return <p key={index}>{renderInlineMarkdown(block.text)}</p>;
+    return (
+      <p key={index}>
+        {renderInlineMarkdown(block.text)}
+      </p>
+    );
   });
 }
 
+/* =========================================================
+   RICH HTML DETECTION
+   ========================================================= */
+
 function isRichHtml(content = "") {
-  // TipTap saves structured content such as <p>, <h2>, <ul>, and <strong>.
   return /<\/?(p|h[1-6]|ul|ol|li|blockquote|pre|code|strong|em|s|a)\b/i.test(
     content
   );
 }
+
+/* =========================================================
+   ARTICLE CONTENT
+   ========================================================= */
 
 function ArticleContent({ content }) {
   const value = content || "";
@@ -179,9 +253,17 @@ function ArticleContent({ content }) {
   });
 
   return (
-    <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
+    <div
+      dangerouslySetInnerHTML={{
+        __html: safeHtml,
+      }}
+    />
   );
 }
+
+/* =========================================================
+   ARTICLE DETAIL PAGE
+   ========================================================= */
 
 function ArticleDetail() {
   const { slug } = useParams();
@@ -208,14 +290,18 @@ function ArticleDetail() {
           controller.signal
         );
 
-        if (!result.success || !result.data) {
+        if (!result?.success || !result?.data) {
           throw new Error("Article not found.");
         }
 
         setArticle(result.data);
       } catch (err) {
         if (err.name !== "AbortError") {
-          setError(err.message || "Unable to load this article.");
+          console.error("Unable to load article:", err);
+
+          setError(
+            err.message || "Unable to load this article."
+          );
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -224,10 +310,12 @@ function ArticleDetail() {
       }
     }
 
-    fetchArticle();
+    void fetchArticle();
 
     return () => controller.abort();
   }, [slug]);
+
+  /* Loading state */
 
   if (loading) {
     return (
@@ -241,6 +329,8 @@ function ArticleDetail() {
     );
   }
 
+  /* Error / not found state */
+
   if (error || !article) {
     return (
       <main className="article-detail-page">
@@ -250,10 +340,16 @@ function ArticleDetail() {
             Back to BestXWorst
           </Link>
 
-          <h1 className="article-detail-title">Article not found</h1>
+          <h1 className="article-detail-title">
+            Article not found
+          </h1>
 
-          <p className="article-detail-excerpt" role="alert">
-            {error || "This article may no longer be available."}
+          <p
+            className="article-detail-excerpt"
+            role="alert"
+          >
+            {error ||
+              "This article may no longer be available."}
           </p>
 
           <Link className="article-back-link" to="/">
@@ -264,10 +360,15 @@ function ArticleDetail() {
     );
   }
 
+  /* Publication date */
+
+  const date = article.publishedAt
+    ? new Date(article.publishedAt)
+    : null;
+
   const formattedDate =
-    article.publishedAt &&
-    !Number.isNaN(new Date(article.publishedAt).getTime())
-      ? new Date(article.publishedAt).toLocaleDateString("en-US", {
+    date && !Number.isNaN(date.getTime())
+      ? date.toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -286,10 +387,14 @@ function ArticleDetail() {
           {article.category || "Reviews"}
         </p>
 
-        <h1 className="article-detail-title">{article.title}</h1>
+        <h1 className="article-detail-title">
+          {article.title || "Untitled article"}
+        </h1>
 
         {article.excerpt && (
-          <p className="article-detail-excerpt">{article.excerpt}</p>
+          <p className="article-detail-excerpt">
+            {article.excerpt}
+          </p>
         )}
 
         <div className="article-detail-meta">
@@ -310,7 +415,9 @@ function ArticleDetail() {
           <img
             className="article-detail-image"
             src={article.featuredImage}
-            alt={article.title || "Article featured image"}
+            alt={
+              article.title || "Article featured image"
+            }
             loading="lazy"
           />
         )}

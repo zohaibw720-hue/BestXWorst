@@ -6,6 +6,8 @@ import LoadingState from "../common/LoadingState.jsx";
 import ErrorMessage from "../common/ErrorMessage.jsx";
 import EmptyState from "../common/EmptyState.jsx";
 
+const MAX_VISIBLE_ARTICLES = 6;
+
 const categories = [
   "All",
   "Cars",
@@ -81,7 +83,15 @@ const categoryAliases = {
 };
 
 function normalizeText(value) {
-  return String(value || "").trim().toLowerCase();
+  if (Array.isArray(value)) {
+    return value.map(normalizeText).filter(Boolean).join(" ");
+  }
+
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value).trim().toLowerCase();
 }
 
 function getArticleType(article) {
@@ -89,7 +99,9 @@ function getArticleType(article) {
 }
 
 function articleMatchesCategory(article, selectedCategory) {
-  if (selectedCategory === "All") return true;
+  if (selectedCategory === "All") {
+    return true;
+  }
 
   const articleCategory = normalizeText(article.category);
   const aliases = categoryAliases[selectedCategory] || [
@@ -125,17 +137,19 @@ function SectionHeading({ eyebrow, title, description }) {
 
 function LatestArticles({
   articles = [],
-  loading,
-  error,
+  loading = false,
+  error = "",
   onRetry,
-  search,
-  category,
-  setCategory,
-  setSearch,
+  search = "",
+  category = "All",
+  setCategory = () => {},
+  setSearch = () => {},
 }) {
-  const reviewArticles = articles.filter((article) =>
-    ["review", ""].includes(getArticleType(article))
-  );
+  const reviewArticles = articles.filter((article) => {
+    const articleType = getArticleType(article);
+
+    return articleType === "review";
+  });
 
   const query = normalizeText(search);
 
@@ -148,19 +162,26 @@ function LatestArticles({
     const searchableText = [
       article.title,
       article.excerpt,
+      article.description,
       article.category,
       article.author,
       article.articleType,
+      article.tags,
     ]
+      .map(normalizeText)
       .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
+      .join(" ");
 
-    return (
-      matchesCategory &&
-      (!query || searchableText.includes(query))
-    );
+    const matchesSearch =
+      !query || searchableText.includes(query);
+
+    return matchesCategory && matchesSearch;
   });
+
+  const visibleArticles = filteredArticles.slice(
+    0,
+    MAX_VISIBLE_ARTICLES
+  );
 
   function resetFilters() {
     setCategory("All");
@@ -195,10 +216,14 @@ function LatestArticles({
           ))}
         </div>
 
-        <span className="article-count">
+        <span className="article-count" aria-live="polite">
           {loading
             ? "LOADING..."
-            : `${filteredArticles.length} ARTICLES`}
+            : `${filteredArticles.length} ${
+                filteredArticles.length === 1
+                  ? "ARTICLE"
+                  : "ARTICLES"
+              }`}
         </span>
       </div>
 
@@ -214,9 +239,9 @@ function LatestArticles({
         />
       )}
 
-      {!loading && !error && filteredArticles.length > 0 && (
+      {!loading && !error && visibleArticles.length > 0 && (
         <div className="review-grid">
-          {filteredArticles.slice(0, 6).map((article, index) => (
+          {visibleArticles.map((article, index) => (
             <ReviewCard
               key={article._id || article.slug || article.title}
               article={article}
@@ -229,19 +254,19 @@ function LatestArticles({
       {!loading && !error && filteredArticles.length === 0 && (
         <EmptyState
           title={
-            search
+            search.trim()
               ? "No matching reviews."
               : category === "All"
                 ? "The next review starts here."
                 : `No ${category} reviews yet.`
           }
           message={
-            search
-              ? "Try a different search term or choose another category."
+            search.trim()
+              ? "Try another search term or choose a different category."
               : "Published articles from your backend will appear here."
           }
           actionLabel={
-            search || category !== "All"
+            search.trim() || category !== "All"
               ? "VIEW ALL REVIEWS"
               : undefined
           }

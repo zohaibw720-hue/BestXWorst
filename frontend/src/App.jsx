@@ -42,8 +42,10 @@ import "./HomePage.css";
    API CONFIGURATION
    ========================================================= */
 
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api/articles";
+const API_URL = `${
+  import.meta.env.VITE_API_URL ||
+  "https://bestxworst-backend.vercel.app/api"
+}/articles`;
 
 /* =========================================================
    ADMIN PROTECTED ROUTE

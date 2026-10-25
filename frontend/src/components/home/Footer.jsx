@@ -1,7 +1,9 @@
-
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Footer() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const footerGroups = [
     {
       title: "EXPLORE",
@@ -28,7 +30,7 @@ function Footer() {
     {
       title: "OUR STANDARDS",
       links: [
-        { label: "Our approach", to: "/#method" },
+        { label: "Our approach", to: "/#method", anchor: "method" },
         { label: "About BestXWorst", to: "/about/" },
         { label: "Editorial standards", to: "/editorial-standards/" },
         { label: "How we test", to: "/how-we-test/" },
@@ -37,11 +39,53 @@ function Footer() {
     },
   ];
 
+  function handleAnchorNavigation(event, anchorId) {
+    event.preventDefault();
+
+    if (location.pathname !== "/") {
+      navigate("/");
+      window.setTimeout(() => {
+        document.getElementById(anchorId)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+
+      return;
+    }
+
+    document.getElementById(anchorId)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    window.history.replaceState(null, "", `/#${anchorId}`);
+  }
+
+  function handleBackToTop(event) {
+    event.preventDefault();
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + window.location.search
+    );
+  }
+
   return (
     <footer className="site-footer">
       <div className="footer-main">
         <div className="footer-brand">
-          <Link className="wordmark footer-wordmark" to="/">
+          <Link
+            className="wordmark footer-wordmark"
+            to="/"
+            aria-label="BestXWorst homepage"
+          >
             BEST<span className="wordmark-x">X</span>WORST
             <span className="wordmark-period">.</span>
           </Link>
@@ -54,6 +98,7 @@ function Footer() {
 
           <p className="footer-description">
             Independent consumer reviews and comparisons.
+            Evidence before opinion.
           </p>
         </div>
 
@@ -62,11 +107,23 @@ function Footer() {
             <div key={group.title}>
               <span className="footer-heading">{group.title}</span>
 
-              {group.links.map((item) => (
-                <Link key={item.label} to={item.to}>
-                  {item.label}
-                </Link>
-              ))}
+              {group.links.map((item) =>
+                item.anchor ? (
+                  <a
+                    key={item.label}
+                    href={item.to}
+                    onClick={(event) =>
+                      handleAnchorNavigation(event, item.anchor)
+                    }
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link key={item.label} to={item.to}>
+                    {item.label}
+                  </Link>
+                )
+              )}
             </div>
           ))}
         </div>
@@ -79,11 +136,13 @@ function Footer() {
 
         <span>INDEPENDENTLY MINDED. ALWAYS INFORMED.</span>
 
-        <a href="#home">BACK TO TOP ↑</a>
+        <a href="#top" onClick={handleBackToTop}>
+          BACK TO TOP ↑
+        </a>
       </div>
 
-      <div className="footer-big-wordmark">
-        <Link to="/" aria-label="BestXWorst homepage">
+      <div className="footer-big-wordmark" aria-hidden="true">
+        <Link to="/" tabIndex={-1}>
           BEST<span className="wordmark-x">X</span>WORS
           <span className="footer-wordmark-final-t">T</span>
           <span className="wordmark-period">.</span>

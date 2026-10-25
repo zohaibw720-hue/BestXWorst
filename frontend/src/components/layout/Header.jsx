@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowUpRight,
   Menu,
@@ -28,12 +28,61 @@ function Header({ search = "", setSearch = () => {} }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   function closeMenu() {
     setMenuOpen(false);
   }
 
+  function closeSearch() {
+    setSearchOpen(false);
+  }
+
   function toggleSearch() {
     setSearchOpen((open) => !open);
+    closeMenu();
+  }
+
+  function handleSearchSubmit(event) {
+    event.preventDefault();
+
+    const trimmedSearch = search.trim();
+
+    setSearch(trimmedSearch);
+    closeSearch();
+    closeMenu();
+
+    if (location.pathname !== "/") {
+      navigate({
+        pathname: "/",
+        search: trimmedSearch
+          ? `?search=${encodeURIComponent(trimmedSearch)}`
+          : "",
+        hash: "#latest",
+      });
+      return;
+    }
+
+    if (trimmedSearch) {
+      navigate({
+        pathname: "/",
+        search: `?search=${encodeURIComponent(trimmedSearch)}`,
+        hash: "#latest",
+      });
+    } else {
+      navigate({
+        pathname: "/",
+        search: "",
+        hash: "#latest",
+      });
+    }
+
+    requestAnimationFrame(() => {
+      document.getElementById("latest")?.scrollIntoView({
+        behavior: "smooth",
+      });
+    });
   }
 
   return (
@@ -57,7 +106,10 @@ function Header({ search = "", setSearch = () => {} }) {
           aria-label={menuOpen ? "Close navigation" : "Open navigation"}
           aria-expanded={menuOpen}
           aria-controls="main-navigation"
-          onClick={() => setMenuOpen((open) => !open)}
+          onClick={() => {
+            setMenuOpen((open) => !open);
+            closeSearch();
+          }}
         >
           {menuOpen ? <X size={21} /> : <Menu size={21} />}
         </button>
@@ -66,7 +118,10 @@ function Header({ search = "", setSearch = () => {} }) {
           className="wordmark"
           to="/"
           aria-label="BestXWorst homepage"
-          onClick={closeMenu}
+          onClick={() => {
+            closeMenu();
+            closeSearch();
+          }}
         >
           BEST<span className="wordmark-x">X</span>WORST
           <span className="wordmark-period">.</span>
@@ -90,7 +145,14 @@ function Header({ search = "", setSearch = () => {} }) {
             {searchOpen ? <X size={19} /> : <Search size={19} />}
           </button>
 
-          <Link className="header-cta" to="/reviews/">
+          <Link
+            className="header-cta"
+            to="/reviews/"
+            onClick={() => {
+              closeMenu();
+              closeSearch();
+            }}
+          >
             EXPLORE REVIEWS
             <ArrowUpRight size={15} />
           </Link>
@@ -106,10 +168,14 @@ function Header({ search = "", setSearch = () => {} }) {
           <NavLink
             key={item.path}
             to={item.path}
+            end
             className={({ isActive }) =>
               `main-nav-link${isActive ? " main-nav-link-active" : ""}`
             }
-            onClick={closeMenu}
+            onClick={() => {
+              closeMenu();
+              closeSearch();
+            }}
           >
             {item.label}
           </NavLink>
@@ -121,22 +187,7 @@ function Header({ search = "", setSearch = () => {} }) {
           className="search-panel"
           id="site-search-panel"
           role="search"
-          onSubmit={(event) => {
-            event.preventDefault();
-            setSearch(search.trim());
-            setSearchOpen(false);
-            closeMenu();
-
-            if (window.location.pathname !== "/") {
-              window.location.assign(
-                `/?search=${encodeURIComponent(search.trim())}#latest`
-              );
-            } else {
-              document.getElementById("latest")?.scrollIntoView({
-                behavior: "smooth",
-              });
-            }
-          }}
+          onSubmit={handleSearchSubmit}
         >
           <Search size={19} aria-hidden="true" />
 

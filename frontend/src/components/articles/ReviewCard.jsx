@@ -3,73 +3,99 @@ import { useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-function normalizeText(value) {
-  return String(value || "").trim().toLowerCase();
+function getDateLabel(value) {
+  if (!value) {
+    return "LATEST STORY";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "LATEST STORY";
+  }
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function getArticleType(article) {
-  return normalizeText(article.articleType || "review");
+  return String(article.articleType || "review")
+    .trim()
+    .toLowerCase();
+}
+
+function getReadLabel(articleType) {
+  switch (articleType) {
+    case "best":
+      return "READ THE STORY";
+    case "worst":
+      return "READ THE VERDICT";
+    case "versus":
+      return "SEE THE COMPARISON";
+    default:
+      return "READ THE STORY";
+  }
 }
 
 export default function ReviewCard({ article, index = 0 }) {
   const [imageFailed, setImageFailed] = useState(false);
 
-  const publishedDate = article.publishedAt
-    ? new Date(article.publishedAt)
-    : null;
+  const title = article.title?.trim() || "Untitled article";
+  const category = article.category?.trim() || "Reviews";
+  const author = article.author?.trim() || "Editorial Team";
 
-  const dateLabel =
-    publishedDate && !Number.isNaN(publishedDate.getTime())
-      ? publishedDate.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
-      : "LATEST STORY";
+  const excerpt =
+    article.excerpt?.trim() ||
+    "Explore the details in our latest editorial story.";
+
+  const dateLabel = getDateLabel(article.publishedAt);
 
   const articleUrl = article.slug
-    ? `/article/${article.slug}`
+    ? `/article/${encodeURIComponent(article.slug)}`
     : "/";
 
   const articleType = getArticleType(article);
+  const readLabel = getReadLabel(articleType);
 
-  const readLabel =
-    articleType === "best"
-      ? "READ THE STORY"
-      : articleType === "worst"
-        ? "READ THE VERDICT"
-        : articleType === "versus"
-          ? "SEE THE COMPARISON"
-          : "READ THE STORY";
+  const imageUrl =
+    typeof article.featuredImage === "string"
+      ? article.featuredImage.trim()
+      : "";
 
   return (
     <article className="review-card">
       <Link
         className="review-image-wrap"
         to={articleUrl}
-        aria-label={`Read ${article.title}`}
+        aria-label={`Read ${title}`}
       >
-        {article.featuredImage && !imageFailed ? (
+        {imageUrl && !imageFailed ? (
           <img
             className="review-image"
-            src={article.featuredImage}
-            alt={article.title || "Article cover"}
+            src={imageUrl}
+            alt={title}
             loading="lazy"
+            decoding="async"
             onError={() => setImageFailed(true)}
           />
         ) : (
           <div
-            className={`review-image-placeholder placeholder-${index % 3}`}
+            className={`review-image-placeholder placeholder-${Math.abs(
+              Number(index) || 0
+            ) % 3}`}
+            aria-label="Article image unavailable"
+            role="img"
           >
             <span>BXW.</span>
           </div>
         )}
 
-        <span className="card-category">
-          {article.category || "Reviews"}
-        </span>
+        <span className="card-category">{category}</span>
 
-        <span className="card-arrow">
+        <span className="card-arrow" aria-hidden="true">
           <ArrowUpRight size={18} />
         </span>
       </Link>
@@ -77,25 +103,22 @@ export default function ReviewCard({ article, index = 0 }) {
       <div className="review-card-content">
         <div className="review-meta">
           <span>{dateLabel}</span>
-          <span className="meta-dot">·</span>
-          <span>{article.author || "Editorial Team"}</span>
+          <span className="meta-dot" aria-hidden="true">
+            ·
+          </span>
+          <span>{author}</span>
         </div>
 
         <h3>
-          <Link to={articleUrl}>
-            {article.title || "Untitled article"}
-          </Link>
+          <Link to={articleUrl}>{title}</Link>
         </h3>
 
-        <p className="review-excerpt">
-          {article.excerpt ||
-            "Explore the details in our latest editorial story."}
-        </p>
+        <p className="review-excerpt">{excerpt}</p>
 
         <Link
           className="card-read-link"
           to={articleUrl}
-          aria-label={`${readLabel}: ${article.title || "article"}`}
+          aria-label={`${readLabel}: ${title}`}
         >
           <span>{readLabel}</span>
 
