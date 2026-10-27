@@ -1,21 +1,27 @@
 
-:root {
-  --ink: #20221f;
-  --muted: #74766f;
-  --paper: #f5f3ee;
-  --white: #ffffff;
-  --line: #e2e0d9;
-  --red: #e7473f;
-  --dark: #191b19;
+/* =========================================================
+   BESTXWORST — GLOBAL COMPONENT STYLES
+   Midnight Tech editorial theme
+   ========================================================= */
 
-  --shadow-soft: 0 16px 45px rgb(25 27 25 / 7%);
-  --shadow-card: 0 20px 55px rgb(25 27 25 / 11%);
-  --radius-small: 2px;
+:root {
+  --ink: #F1F5F9;
+  --muted: #A7B4C8;
+  --paper: #111C2E;
+  --white: #F1F5F9;
+  --line: #263449;
+  --red: #22D3EE;
+  --dark: #0B1220;
+
+  --shadow-soft: 0 16px 45px rgb(0 0 0 / 18%);
+  --shadow-card: 0 20px 55px rgb(0 0 0 / 30%);
+
+  --radius-small: 4px;
 }
 
-/* =========================
+/* =========================================================
    PRIMARY BUTTON
-========================= */
+   ========================================================= */
 
 .button-primary {
   display: inline-flex;
@@ -24,15 +30,17 @@
   gap: 12px;
   min-height: 48px;
   padding: 0 21px;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--red);
   border-radius: var(--radius-small);
-  background: var(--ink);
-  color: var(--white);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  line-height: 1.2;
+  background: var(--red);
+  color: #0B1220;
+  font-family: var(--font-body, "DM Sans", Arial, sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  line-height: 1.4;
   text-align: center;
+  text-decoration: none;
   cursor: pointer;
   transition:
     background var(--transition),
@@ -43,21 +51,27 @@
 
 .button-primary:hover {
   transform: translateY(-2px);
-  border-color: var(--red);
-  background: var(--red);
+  border-color: #67E8F9;
+  background: #67E8F9;
+  color: #0B1220;
 }
 
 .button-primary:active {
   transform: translateY(0);
 }
 
+.button-primary:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
 .button-primary svg {
   flex: 0 0 auto;
 }
 
-/* =========================
+/* =========================================================
    SECONDARY BUTTON
-========================= */
+   ========================================================= */
 
 .button-secondary {
   display: inline-flex;
@@ -68,35 +82,60 @@
   padding: 0 20px;
   border: 1px solid var(--line);
   border-radius: var(--radius-small);
-  background: transparent;
+  background: var(--paper);
   color: var(--ink);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
+  font-family: var(--font-body, "DM Sans", Arial, sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
   transition:
     background var(--transition),
     border-color var(--transition),
-    color var(--transition);
+    color var(--transition),
+    transform var(--transition);
 }
 
 .button-secondary:hover {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--white);
+  border-color: var(--red);
+  background: var(--red);
+  color: #0B1220;
 }
 
-/* =========================
+.button-secondary:active {
+  transform: translateY(1px);
+}
+
+.button-secondary:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+.button-secondary svg {
+  flex: 0 0 auto;
+}
+
+/* =========================================================
    TEXT LINKS
-========================= */
+   ========================================================= */
 
 .text-link {
+  color: var(--ink);
   text-decoration: none;
+  text-underline-offset: 4px;
+  transition: color var(--transition);
 }
 
-/* =========================
+.text-link:hover {
+  color: var(--red);
+}
+
+/* =========================================================
    COMPARISON CARD
-========================= */
+   ========================================================= */
 
 .comparison-card {
   display: flex;
@@ -105,25 +144,30 @@
   height: 100%;
   overflow: hidden;
   border: 1px solid var(--line);
-  background: var(--white);
+  border-radius: 6px;
+  background: var(--paper);
   box-shadow: var(--shadow-soft);
   animation: comparison-card-enter 0.45s ease both;
   animation-delay: calc(var(--comparison-index, 0) * 80ms);
   transition:
     transform var(--transition),
-    box-shadow var(--transition);
+    box-shadow var(--transition),
+    border-color var(--transition);
 }
 
 .comparison-card:hover {
   transform: translateY(-4px);
+  border-color: var(--red);
   box-shadow: var(--shadow-card);
 }
+
+/* Card image */
 
 .comparison-card-image {
   display: block;
   overflow: hidden;
   aspect-ratio: 16 / 10;
-  background: var(--paper);
+  background: var(--dark);
 }
 
 .comparison-card-image img {
@@ -138,6 +182,8 @@
   transform: scale(1.04);
 }
 
+/* Card content */
+
 .comparison-card-content {
   display: flex;
   flex: 1;
@@ -147,26 +193,54 @@
   padding: 24px;
 }
 
+/* Category label */
+
 .comparison-card-label {
   color: var(--red);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.4px;
+  font-family: var(--font-body, "DM Sans", Arial, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1.5;
+  text-transform: uppercase;
 }
+
+/* Card heading */
 
 .comparison-card-content h3 {
   margin: 0;
   color: var(--ink);
+  font-family: var(--font-heading, "Manrope", Arial, sans-serif);
   font-size: clamp(20px, 2vw, 26px);
-  line-height: 1.2;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
 }
+
+.comparison-card-content h3 a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.comparison-card-content h3 a:hover {
+  color: var(--red);
+}
+
+/* Card description */
 
 .comparison-card-content p {
   margin: 0;
   color: var(--muted);
+  font-family: var(--font-body, "DM Sans", Arial, sans-serif);
   font-size: 14px;
-  line-height: 1.7;
+  font-weight: 400;
+  line-height: 1.75;
+  text-wrap: pretty;
 }
+
+/* Card link */
 
 .comparison-card-link {
   display: inline-flex;
@@ -175,14 +249,19 @@
   margin-top: auto;
   padding-top: 8px;
   color: var(--ink);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
+  font-family: var(--font-body, "DM Sans", Arial, sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
   text-decoration: none;
-  transition: color var(--transition);
+  transition:
+    color var(--transition),
+    gap var(--transition);
 }
 
 .comparison-card-link:hover {
+  gap: 12px;
   color: var(--red);
 }
 
@@ -190,9 +269,9 @@
   flex-shrink: 0;
 }
 
-/* =========================
+/* =========================================================
    COMPARISON CARD ANIMATION
-========================= */
+   ========================================================= */
 
 @keyframes comparison-card-enter {
   from {
@@ -206,9 +285,9 @@
   }
 }
 
-/* =========================
+/* =========================================================
    GLOBAL INTERACTION STYLES
-========================= */
+   ========================================================= */
 
 a,
 button,
@@ -228,13 +307,13 @@ select:focus-visible {
 }
 
 ::placeholder {
-  color: #96978f;
+  color: var(--muted);
   opacity: 1;
 }
 
-/* =========================
+/* =========================================================
    REDUCED MOTION ACCESSIBILITY
-========================= */
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .comparison-card {
@@ -253,21 +332,86 @@ select:focus-visible {
   .comparison-card:hover .comparison-card-image img {
     transform: none;
   }
+
+  .button-primary,
+  .button-secondary,
+  .text-link,
+  .comparison-card-link {
+    transition: none;
+  }
 }
 
-/* =========================
+/* =========================================================
    RESPONSIVE DESIGN
-========================= */
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .comparison-card-content {
+    padding: 22px;
+  }
+
+  .comparison-card-content h3 {
+    font-size: clamp(19px, 2.5vw, 24px);
+  }
+}
 
 @media (max-width: 600px) {
   .button-primary,
   .button-secondary {
     min-height: 45px;
     padding-inline: 16px;
+    font-size: 12px;
   }
 
   .comparison-card-content {
     gap: 12px;
     padding: 18px;
   }
+
+  .comparison-card-content h3 {
+    font-size: 21px;
+    line-height: 1.3;
+  }
+
+  .comparison-card-content p {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .comparison-card-label {
+    font-size: 10px;
+    letter-spacing: 0.9px;
+  }
+
+  .comparison-card-link {
+    font-size: 12px;
+  }
+}
+
+/* Keep buttons aligned in button groups */
+
+.button-primary,
+.button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  min-height: 48px;
+  box-sizing: border-box;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.button-primary svg,
+.button-secondary svg {
+  flex-shrink: 0;
+}
+
+.button-group,
+.button-row,
+.button-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }

@@ -3,27 +3,69 @@
 
 :root {
   font-family: "DM Sans", Arial, Helvetica, sans-serif;
-  color: #20221f;
-  background: #ffffff;
+  color: #F1F5F9;
+  background: #0B1220;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --ink: #20221f;
-  --muted: #74766f;
-  --paper: #f5f3ee;
-  --white: #ffffff;
-  --line: #e2e0d9;
-  --red: #e7473f;
-  --dark: #191b19;
+  /* Midnight Tech brand colors */
+  --ink: #F1F5F9;
+  --ink-soft: #D7E0ED;
+  --muted: #A7B4C8;
+  --paper: #111C2E;
+  --white: #F1F5F9;
+  --line: #263449;
 
-  --font-heading: "Manrope", Arial, sans-serif;
+  --red: #22D3EE;
+  --red-hover: #06B6D4;
+  --dark: #0B1220;
+  --dark-soft: #111C2E;
+
+  /* Primary theme tokens */
+  --midnight-navy: #0B1220;
+  --deep-slate: #111C2E;
+  --electric-cyan: #22D3EE;
+  --cool-white: #F1F5F9;
+  --steel-grey: #A7B4C8;
+  --border-blue: #263449;
+
+  /* Surface colors */
+  --page-bg: #0B1220;
+  --surface: #111C2E;
+  --surface-hover: #17263B;
+  --surface-raised: #19283D;
+
+  /* Text colors */
+  --text-primary: #F1F5F9;
+  --text-secondary: #C3CEDD;
+  --text-muted: #A7B4C8;
+  --text-on-dark: #F1F5F9;
+  --text-on-dark-muted: #A7B4C8;
+
+  /* Accent colors */
+  --accent: #22D3EE;
+  --accent-hover: #06B6D4;
+  --accent-soft: rgba(34, 211, 238, 0.12);
+  --accent-border: rgba(34, 211, 238, 0.35);
+
+  /* Typography */
+  --font-body: "DM Sans", Arial, Helvetica, sans-serif;
+  --font-heading: "Manrope", Arial, Helvetica, sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+
   --page-gutter: clamp(20px, 6.5vw, 100px);
   --content-width: 1440px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --transition: 220ms var(--ease-out);
+
+  color-scheme: dark;
 }
 
 *,
@@ -37,22 +79,25 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 90px;
   -webkit-text-size-adjust: 100%;
+  background: var(--page-bg);
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background: var(--white);
-  color: var(--ink);
-  font-family: "DM Sans", Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  font-weight: 400;
 }
 
 #root {
   min-height: 100vh;
   isolation: isolate;
+  background: var(--page-bg);
 }
 
 h1,
@@ -61,14 +106,54 @@ h3,
 h4,
 h5,
 h6 {
+  margin-top: 0;
   font-family: var(--font-heading);
   color: inherit;
+  font-weight: 700;
   line-height: 1.15;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
+h1 {
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+h4,
+h5,
+h6 {
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
 p {
+  margin-top: 0;
+  color: inherit;
   text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: var(--accent);
 }
 
 button,
@@ -94,11 +179,6 @@ button:disabled {
   opacity: 0.55;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
 img,
 picture,
 video,
@@ -122,18 +202,38 @@ textarea {
   resize: vertical;
 }
 
+/* Global form colors */
+input,
+textarea,
+select {
+  color: var(--text-primary);
+  background-color: var(--surface);
+  border-color: var(--line);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline-color: var(--accent);
+}
+
 ::selection {
-  color: #ffffff;
-  background: var(--red);
+  color: #0B1220;
+  background: var(--electric-cyan);
 }
 
 :focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
 
 .red-period {
-  color: var(--red);
+  color: var(--accent);
 }
 
 .container {
@@ -152,17 +252,73 @@ textarea {
   border: 0;
 }
 
-@media (max-width: 600px) {
+/* Shared dark sections */
+.dark-section,
+.dark-section h1,
+.dark-section h2,
+.dark-section h3,
+.dark-section h4 {
+  color: var(--text-on-dark);
+}
+
+.dark-section p {
+  color: var(--text-on-dark-muted);
+}
+
+/* Shared accent utility classes */
+.accent-text {
+  color: var(--accent);
+}
+
+.accent-border {
+  border-color: var(--accent-border);
+}
+
+.accent-surface {
+  background: var(--accent-soft);
+}
+
+/* Respect existing white/light utility sections if needed.
+   Page-specific CSS can override these styles intentionally. */
+.light-section {
+  color: #20211F;
+  background: #F1F5F9;
+}
+
+.light-section p {
+  color: #475569;
+}
+
+@media (max-width: 768px) {
   :root {
-    --page-gutter: 20px;
+    --page-gutter: 24px;
   }
 
   body {
-    font-size: 13px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  h1 {
+    font-size: clamp(2.35rem, 10vw, 4rem);
+  }
+
+  h2 {
+    font-size: clamp(1.8rem, 7vw, 2.75rem);
   }
 
   html {
     scroll-padding-top: 72px;
+  }
+}
+
+@media (max-width: 380px) {
+  :root {
+    --page-gutter: 18px;
+  }
+
+  body {
+    font-size: 14px;
   }
 }
 

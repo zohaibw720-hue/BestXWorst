@@ -5,174 +5,220 @@ import { Link } from "react-router-dom";
 
 const heroSlides = [
   {
-    label: "Independent Reviews",
-    kicker: "BEHIND THE WHEEL",
-    title: "Engineering. Emotion. Excellence.",
+    label: "TECHNOLOGY",
+    kicker: "Technology · Expert Reviews",
+    title: "Technology that earns its place.",
     description:
-      "Discover the performance, technology, and design that make a car worth your attention.",
+      "Discover the devices and innovations worth your attention, backed by evidence rather than hype.",
+    image:
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=2400&q=90",
+    alt: "Electronic circuit board with detailed components",
+    path: "/technology/",
+    cta: "Explore technology",
+  },
+  {
+    label: "AI & SOFTWARE",
+    kicker: "Artificial Intelligence · Software",
+    title: "Smarter tools. Better decisions.",
+    description:
+      "Explore AI tools and software through practical comparisons, clear testing and independent analysis.",
+    image:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=2400&q=90",
+    alt: "Artificial intelligence and digital technology scene",
+    path: "/ai-software/",
+    cta: "Explore AI & software",
+  },
+  {
+    label: "HOME & LIVING",
+    kicker: "Home · Everyday Essentials",
+    title: "Make every choice count at home.",
+    description:
+      "Find useful home products and everyday essentials that deliver real value and practical performance.",
+    image:
+      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2400&q=90",
+    alt: "Contemporary living room with natural lighting",
+    path: "/home/",
+    cta: "Explore home",
+  },
+  {
+    label: "CARS",
+    kicker: "Automotive · Performance",
+    title: "Know what drives the difference.",
+    description:
+      "Compare cars, explore automotive technology and understand what matters before making a decision.",
     image:
       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2400&q=90",
-    alt: "Porsche sports car photographed in a cinematic automotive setting",
+    alt: "Sports car in a dramatic setting",
+    path: "/cars/",
+    cta: "Explore cars",
   },
   {
-    label: "Performance & Design",
-    kicker: "BEYOND THE BADGE",
-    title: "The details make the difference.",
+    label: "BEAUTY",
+    kicker: "Beauty · Personal Care",
+    title: "Find what works for you.",
     description:
-      "Look beyond the badge to discover what makes a car genuinely worth considering.",
+      "Explore beauty and personal-care products with practical insights into ingredients, performance and value.",
     image:
-      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=2400&q=90",
-    alt: "Premium automobile showcasing its exterior design",
+      "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=2400&q=90",
+    alt: "Skincare products in a clean editorial setting",
+    path: "/beauty/",
+    cta: "Explore beauty",
   },
   {
-    label: "Technology & Innovation",
-    kicker: "THE ROAD AHEAD",
-    title: "What deserves your attention?",
+    label: "FASHION",
+    kicker: "Fashion · Style",
+    title: "Style with a sharper perspective.",
     description:
-      "Explore the innovations, thoughtful engineering, and features that make a meaningful difference.",
+      "Discover fashion essentials and style choices through thoughtful reviews and clear comparisons.",
     image:
-      "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?auto=format&fit=crop&w=2400&q=90",
-    alt: "Modern performance car photographed in a dramatic setting",
+      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=2400&q=90",
+    alt: "Fashion editorial photography",
+    path: "/fashion/",
+    cta: "Explore fashion",
+  },
+  {
+    label: "TRAVEL",
+    kicker: "Travel · Experiences",
+    title: "Choose your next adventure wisely.",
+    description:
+      "Explore travel essentials, useful gear and smarter choices for journeys worth remembering.",
+    image:
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2400&q=90",
+    alt: "Mountain landscape with distant peaks",
+    path: "/travel/",
+    cta: "Explore travel",
   },
 ];
 
-function Hero() {
+const SLIDE_INTERVAL = 6000;
+
+export default function Hero() {
   const [activeSlide, setActiveSlide] = useState(0);
 
-  const slide = heroSlides[activeSlide];
-
   useEffect(() => {
-    const timer = window.setInterval(() => {
+    const interval = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % heroSlides.length);
-    }, 6000);
+    }, SLIDE_INTERVAL);
 
-    return () => window.clearInterval(timer);
+    return () => window.clearInterval(interval);
   }, []);
 
-  function nextSlide() {
-    setActiveSlide((current) => (current + 1) % heroSlides.length);
-  }
+  const goToSlide = (index) => {
+    setActiveSlide((index + heroSlides.length) % heroSlides.length);
+  };
 
-  function previousSlide() {
-    setActiveSlide(
-      (current) => (current - 1 + heroSlides.length) % heroSlides.length
-    );
-  }
+  const currentSlide = heroSlides[activeSlide];
 
   return (
     <section
       className="hero-section hero-section-full automotive-hero"
       id="home"
+      aria-label="BestXWorst featured categories"
     >
-      <div
-        className="hero-visual hero-visual-background"
-        aria-label="Featured automotive stories"
-      >
-        {heroSlides.map((item, index) => (
+      {/* Background photos only — no category labels or counters */}
+      <div className="hero-visual hero-visual-background">
+        {heroSlides.map((slide, index) => (
           <img
-            key={item.image}
+            key={slide.label}
             className={`hero-image hero-background-image ${
-              activeSlide === index ? "hero-background-image-active" : ""
+              index === activeSlide ? "hero-background-image-active" : ""
             }`}
-            src={item.image}
-            alt={item.alt}
-            aria-hidden={activeSlide !== index}
+            src={slide.image}
+            alt=""
+            aria-hidden="true"
+            loading={index === 0 ? "eager" : "lazy"}
             fetchPriority={index === 0 ? "high" : "auto"}
+            draggable="false"
           />
         ))}
 
         <div className="hero-image-overlay" />
       </div>
 
-      <div className="hero-image-top hero-overlay-top">
-        <span className="image-label">{slide.label}</span>
-
-        <span className="image-counter" aria-live="polite">
-          0{activeSlide + 1} <span>/ 0{heroSlides.length}</span>
-        </span>
-      </div>
-
-      <div className="hero-copy hero-overlay-copy automotive-hero-copy">
+      {/* Main hero content remains separate from the background images */}
+      <div
+        className="hero-copy hero-overlay-copy automotive-hero-copy"
+        key={currentSlide.label}
+      >
         <div className="eyebrow hero-eyebrow-light">
           <span className="red-dot" />
-          Independent automotive reviews
+          Independent Reviews. Better Decisions.
         </div>
 
         <h1>
-          Find your
+          Know the Best.
           <br />
-          <span>next</span> obsession
-          <span className="red-period">.</span>
+          Avoid the <span className="red-period">Worst.</span>
         </h1>
 
         <p className="hero-description">
-          Discover exceptional cars, intelligent engineering, and the
-          technology shaping the road ahead. Independent insights,
-          evidence-led reviews, and clear verdicts without the hype.
+          Independent reviews, evidence-led comparisons and honest insights
+          to help you choose with confidence.
         </p>
 
-        <div className="hero-slide-story" key={slide.title}>
-          <span className="caption-kicker">{slide.kicker}</span>
+        <div className="hero-slide-story">
+          <span className="caption-kicker">{currentSlide.kicker}</span>
 
-          <h2>{slide.title}</h2>
+          <h2>{currentSlide.title}</h2>
 
-          <p>{slide.description}</p>
+          <p>{currentSlide.description}</p>
         </div>
 
         <div className="hero-actions automotive-hero-actions">
-          <a
+          <Link
             className="button-primary automotive-primary-button"
-            href="#latest"
+            to={currentSlide.path}
           >
-            Explore car reviews <ArrowRight size={17} />
-          </a>
+            {currentSlide.cta}
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
 
-          <Link className="text-link hero-text-link" to="/cars/">
-            Discover the car edit <ArrowUpRight size={17} />
+          <Link className="text-link hero-text-link" to="/reviews/">
+            Explore all reviews
+            <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
         </div>
 
         <div className="hero-bottom-note hero-bottom-note-light">
-          <span>Design &amp; engineering</span>
+          <span>Evidence before opinion</span>
           <span className="note-divider" />
-          <span>Independent perspective</span>
+          <span>Independent editorial standards</span>
         </div>
       </div>
 
+      {/* Slider controls */}
       <div className="hero-slider-controls hero-controls-overlay">
         <button
           type="button"
           className="slider-next slider-previous"
-          aria-label="Previous featured story"
-          onClick={previousSlide}
+          onClick={() => goToSlide(activeSlide - 1)}
+          aria-label="Previous featured category"
         >
-          <ArrowRight size={19} />
+          <ArrowRight size={17} aria-hidden="true" />
         </button>
 
-        {heroSlides.map((item, index) => (
+        {heroSlides.map((slide, index) => (
           <button
-            key={item.label}
+            key={slide.label}
             type="button"
             className={`slider-indicator ${
-              activeSlide === index ? "slider-indicator-active" : ""
+              index === activeSlide ? "slider-indicator-active" : ""
             }`}
-            aria-label={`Show slide ${index + 1}`}
-            aria-pressed={activeSlide === index}
-            onClick={() => setActiveSlide(index)}
+            onClick={() => goToSlide(index)}
+            aria-label={`Show ${slide.label.toLowerCase()} slide`}
+            aria-current={index === activeSlide ? "true" : undefined}
           />
         ))}
 
         <button
           type="button"
           className="slider-next"
-          aria-label="Next featured story"
-          onClick={nextSlide}
+          onClick={() => goToSlide(activeSlide + 1)}
+          aria-label="Next featured category"
         >
-          <ArrowRight size={19} />
+          <ArrowRight size={17} aria-hidden="true" />
         </button>
       </div>
     </section>
   );
 }
-
-export default Hero;

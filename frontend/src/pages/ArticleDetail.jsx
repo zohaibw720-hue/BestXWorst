@@ -8,7 +8,10 @@ import {
   UserRound,
 } from "lucide-react";
 
+import Header from "../components/layout/Header.jsx";
+import Footer from "../components/home/Footer.jsx";
 import { api } from "../services/api";
+import { getImageTheme } from "../utils/imageTheme.js";
 import "./ArticleDetail.css";
 
 /* =========================================================
@@ -271,6 +274,13 @@ function ArticleDetail() {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [headerSearch, setHeaderSearch] = useState("");
+  const [imageTheme, setImageTheme] = useState(null);
+
+  function handleFeaturedImageLoad(event) {
+    const detectedTheme = getImageTheme(event.currentTarget);
+    setImageTheme(detectedTheme);
+  }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -279,6 +289,7 @@ function ArticleDetail() {
       setLoading(true);
       setError("");
       setArticle(null);
+      setImageTheme(null);
 
       try {
         if (!slug) {
@@ -315,54 +326,7 @@ function ArticleDetail() {
     return () => controller.abort();
   }, [slug]);
 
-  /* Loading state */
-
-  if (loading) {
-    return (
-      <main className="article-detail-page">
-        <div className="article-detail-inner">
-          <p role="status" aria-live="polite">
-            Loading article...
-          </p>
-        </div>
-      </main>
-    );
-  }
-
-  /* Error / not found state */
-
-  if (error || !article) {
-    return (
-      <main className="article-detail-page">
-        <div className="article-detail-inner">
-          <Link className="article-back-link" to="/">
-            <ArrowLeft size={17} />
-            Back to BestXWorst
-          </Link>
-
-          <h1 className="article-detail-title">
-            Article not found
-          </h1>
-
-          <p
-            className="article-detail-excerpt"
-            role="alert"
-          >
-            {error ||
-              "This article may no longer be available."}
-          </p>
-
-          <Link className="article-back-link" to="/">
-            Explore more articles
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
-  /* Publication date */
-
-  const date = article.publishedAt
+  const date = article?.publishedAt
     ? new Date(article.publishedAt)
     : null;
 
@@ -376,62 +340,107 @@ function ArticleDetail() {
       : null;
 
   return (
-    <main className="article-detail-page">
-      <div className="article-detail-inner">
-        <Link className="article-back-link" to="/">
-          <ArrowLeft size={17} />
-          Back to BestXWorst
-        </Link>
+    <>
+      <Header
+        search={headerSearch}
+        setSearch={setHeaderSearch}
+      />
 
-        <p className="article-detail-category">
-          {article.category || "Reviews"}
-        </p>
+      <main
+        className="article-detail-page"
+        style={imageTheme || undefined}
+      >
+        <div className="article-detail-inner">
+          {loading ? (
+            <p role="status" aria-live="polite">
+              Loading article...
+            </p>
+          ) : error || !article ? (
+            <>
+              <Link className="article-back-link" to="/">
+                <ArrowLeft size={17} />
+                Back to BestXWorst
+              </Link>
 
-        <h1 className="article-detail-title">
-          {article.title || "Untitled article"}
-        </h1>
+              <h1 className="article-detail-title">
+                Article not found
+              </h1>
 
-        {article.excerpt && (
-          <p className="article-detail-excerpt">
-            {article.excerpt}
-          </p>
-        )}
+              <p
+                className="article-detail-excerpt"
+                role="alert"
+              >
+                {error ||
+                  "This article may no longer be available."}
+              </p>
 
-        <div className="article-detail-meta">
-          <span>
-            <UserRound size={16} />
-            {article.author || "BestXWorst Editorial Team"}
-          </span>
+              <Link className="article-back-link" to="/">
+                Explore more articles
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link className="article-back-link" to="/">
+                <ArrowLeft size={17} />
+                Back to BestXWorst
+              </Link>
 
-          {formattedDate && (
-            <span>
-              <CalendarDays size={16} />
-              {formattedDate}
-            </span>
+              <p className="article-detail-category">
+                {article.category || "Reviews"}
+              </p>
+
+              <h1 className="article-detail-title">
+                {article.title || "Untitled article"}
+              </h1>
+
+              {article.excerpt && (
+                <p className="article-detail-excerpt">
+                  {article.excerpt}
+                </p>
+              )}
+
+              <div className="article-detail-meta">
+                <span>
+                  <UserRound size={16} />
+                  {article.author ||
+                    "BestXWorst Editorial Team"}
+                </span>
+
+                {formattedDate && (
+                  <span>
+                    <CalendarDays size={16} />
+                    {formattedDate}
+                  </span>
+                )}
+              </div>
+
+              {article.featuredImage && (
+                <img
+                  className="article-detail-image"
+                  src={article.featuredImage}
+                  alt={
+                    article.title || "Article featured image"
+                  }
+                  loading="lazy"
+                  onLoad={handleFeaturedImageLoad}
+                />
+              )}
+
+              <article className="article-detail-content">
+                <ArticleContent content={article.content} />
+              </article>
+
+              <Link className="article-back-link" to="/">
+                <ArrowLeft size={17} />
+                Explore more articles
+              </Link>
+            </>
           )}
         </div>
+      </main>
 
-        {article.featuredImage && (
-          <img
-            className="article-detail-image"
-            src={article.featuredImage}
-            alt={
-              article.title || "Article featured image"
-            }
-            loading="lazy"
-          />
-        )}
-
-        <article className="article-detail-content">
-          <ArticleContent content={article.content} />
-        </article>
-
-        <Link className="article-back-link" to="/">
-          <ArrowLeft size={17} />
-          Explore more articles
-        </Link>
-      </div>
-    </main>
+      <Footer />
+    </>
   );
 }
 

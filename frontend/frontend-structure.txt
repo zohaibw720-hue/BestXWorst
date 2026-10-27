@@ -1,0 +1,5 @@
+﻿|-- src
+  |-- pages
+  |-- styles
+    |-- InfoPage.css
+    |-- InfoPage.jsx
