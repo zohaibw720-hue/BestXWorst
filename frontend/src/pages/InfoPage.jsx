@@ -52,7 +52,7 @@ const pageContent = {
     eyebrow: "OUR METHODOLOGY",
     title: "How we evaluate products.",
     description:
-      "Understand what we assess, what evidence informs our conclusions, and where the limitations remain.",
+      "Discover how we assess products, compare available evidence, and explain the strengths, limitations, and trade-offs behind our conclusions.",
     icon: ClipboardCheck,
   },
 };
@@ -346,19 +346,22 @@ function InformationPage({ type }) {
         {type === "testing" && (
           <div className="info-content">
             <InfoSectionHeading
-              eyebrow="A CLEARER PROCESS"
-              title="Understand the evidence behind a recommendation."
+              eyebrow="OUR APPROACH"
+              title="Every conclusion should have a clear basis."
             >
               <p>
-                Different products require different evaluation methods.
-                The appropriate process depends on the product, the question
-                being answered, and the evidence available.
+                Products serve different needs, and no single evaluation
+                method fits every category. We consider each product's
+                intended purpose, relevant criteria, and the quality of
+                the evidence available.
               </p>
 
               <p>
-                We aim to explain the basis of our conclusions instead of
-                presenting every assessment as if it came from identical
-                hands-on testing.
+                We explain what the evidence supports, acknowledge
+                meaningful limitations, and distinguish hands-on testing
+                from research-based analysis. Our goal is to help readers
+                understand not just our conclusions, but the reasoning
+                behind them.
               </p>
             </InfoSectionHeading>
 
@@ -370,8 +373,9 @@ function InformationPage({ type }) {
                   <h3>Define the reader's needs</h3>
 
                   <p>
-                    Identify the intended use, important requirements, price
-                    considerations, and the questions a reader needs answered.
+                    Identify the intended use, important requirements,
+                    budget considerations, and the questions a reader
+                    needs answered.
                   </p>
                 </div>
               </article>
@@ -386,6 +390,7 @@ function InformationPage({ type }) {
                     Depending on the article, evidence may include hands-on
                     testing, product specifications, official documentation,
                     verified information, and credible independent sources.
+                    The evidence used should be clear to the reader.
                   </p>
                 </div>
               </article>
@@ -397,9 +402,9 @@ function InformationPage({ type }) {
                   <h3>Compare strengths and limitations</h3>
 
                   <p>
-                    Consider usability, features, reliability, value,
+                    Assess relevant features, usability, reliability, value,
                     trade-offs, and the situations in which an option may
-                    or may not fit.
+                    or may not meet a reader's needs.
                   </p>
                 </div>
               </article>
@@ -411,8 +416,9 @@ function InformationPage({ type }) {
                   <h3>Explain the conclusion</h3>
 
                   <p>
-                    Present the main findings, who may benefit, important
+                    Summarize the main findings, who may benefit, important
                     drawbacks, and any limitations in the available evidence.
+                    Conclusions should reflect the evidence, not marketing claims.
                   </p>
                 </div>
               </article>
@@ -438,9 +444,10 @@ function InformationPage({ type }) {
               <h2>Research is not the same as hands-on testing.</h2>
 
               <p>
-                We should accurately describe the evidence used for each
-                assessment. If direct testing was not conducted, an article
-                must not imply otherwise.
+                We describe the evidence used for each assessment as
+                accurately as possible. If direct testing was not conducted,
+                an article must not imply otherwise. Research-based
+                evaluations should make their sources and limitations clear.
               </p>
             </section>
           </div>

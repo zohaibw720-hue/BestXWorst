@@ -2,11 +2,10 @@
 import { useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getImageTheme } from "../../utils/imageTheme.js";
 
 function getDateLabel(value) {
-  if (!value) {
-    return "LATEST STORY";
-  }
+  if (!value) return "LATEST STORY";
 
   const date = new Date(value);
 
@@ -30,7 +29,7 @@ function getArticleType(article) {
 function getReadLabel(articleType) {
   switch (articleType) {
     case "best":
-      return "READ THE STORY";
+      return "READ REVIEW";
     case "worst":
       return "READ THE VERDICT";
     case "versus":
@@ -42,6 +41,7 @@ function getReadLabel(articleType) {
 
 export default function ReviewCard({ article, index = 0 }) {
   const [imageFailed, setImageFailed] = useState(false);
+  const [imageTheme, setImageTheme] = useState(null);
 
   const title = article.title?.trim() || "Untitled article";
   const category = article.category?.trim() || "Reviews";
@@ -52,21 +52,41 @@ export default function ReviewCard({ article, index = 0 }) {
     "Explore the details in our latest editorial story.";
 
   const dateLabel = getDateLabel(article.publishedAt);
+  const articleType = getArticleType(article);
+  const isBestPick = articleType === "best";
+  const readLabel = getReadLabel(articleType);
 
   const articleUrl = article.slug
     ? `/article/${encodeURIComponent(article.slug)}`
     : "/";
-
-  const articleType = getArticleType(article);
-  const readLabel = getReadLabel(articleType);
 
   const imageUrl =
     typeof article.featuredImage === "string"
       ? article.featuredImage.trim()
       : "";
 
+  function handleImageLoad(event) {
+    const detectedTheme = getImageTheme(event.currentTarget);
+    setImageTheme(detectedTheme);
+  }
+
+  function handleImageError() {
+    setImageFailed(true);
+    setImageTheme(null);
+  }
+
   return (
-    <article className="review-card">
+    <article
+      className={[
+        "review-card",
+        isBestPick ? "review-card-best-pick" : "",
+        imageTheme ? "has-image-theme" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      style={imageTheme || undefined}
+      data-article-type={articleType}
+    >
       <Link
         className="review-image-wrap"
         to={articleUrl}
@@ -79,13 +99,14 @@ export default function ReviewCard({ article, index = 0 }) {
             alt={title}
             loading="lazy"
             decoding="async"
-            onError={() => setImageFailed(true)}
+            onLoad={handleImageLoad}
+            onError={handleImageError}
           />
         ) : (
           <div
-            className={`review-image-placeholder placeholder-${Math.abs(
-              Number(index) || 0
-            ) % 3}`}
+            className={`review-image-placeholder placeholder-${
+              Math.abs(Number(index) || 0) % 3
+            }`}
             aria-label="Article image unavailable"
             role="img"
           >

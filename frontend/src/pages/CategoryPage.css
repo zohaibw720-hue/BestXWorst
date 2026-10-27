@@ -1,22 +1,23 @@
 
 /* =========================================================
    BESTXWORST — CATEGORY PAGE
-   Premium Editorial Design
-   Responsive Layout + Aligned Article Buttons
+   Midnight Tech · Premium Editorial Design
+   Navy + Electric Cyan · Responsive Article Grid
+   Pagination · Accessible Interactions
 ========================================================= */
 
 /* DESIGN TOKENS */
 
 :root {
-  --category-ink: #11110f;
-  --category-paper: #f5f3ee;
-  --category-white: #fffdf8;
-  --category-muted: #77756e;
-  --category-line: rgba(20, 20, 18, 0.14);
-  --category-gold: #d5b783;
-  --category-red: #d92f32;
-  --category-red-dark: #a92125;
-  --category-card-bg: #eeece5;
+  --category-ink: #F1F5F9;
+  --category-paper: #0B1220;
+  --category-white: #F1F5F9;
+  --category-muted: #A7B4C8;
+  --category-line: #263449;
+  --category-gold: #22D3EE;
+  --category-red: #22D3EE;
+  --category-red-dark: #06B6D4;
+  --category-card-bg: #111C2E;
 
   --category-ease: cubic-bezier(0.2, 0.65, 0.3, 1);
   --category-transition: 0.25s ease;
@@ -71,6 +72,8 @@
 ========================================================= */
 
 .category-hero {
+  --category-hero-shade: 0.04;
+
   position: relative;
   isolation: isolate;
   display: block;
@@ -79,21 +82,30 @@
   min-height: 400px;
   max-height: 480px;
   overflow: hidden;
-  background-color: #171715;
+  background-color: #0B1220;
+
   background-image:
     linear-gradient(
       90deg,
-      rgba(9, 10, 10, 0.94) 0%,
-      rgba(9, 10, 10, 0.8) 28%,
-      rgba(9, 10, 10, 0.48) 56%,
-      rgba(9, 10, 10, 0.12) 100%
+      rgba(9, 16, 29, 0.96) 0%,
+      rgba(9, 16, 29, 0.84) 28%,
+      rgba(9, 16, 29, 0.54) 56%,
+      rgba(9, 16, 29, 0.18) 100%
     ),
     linear-gradient(
       0deg,
-      rgba(9, 10, 10, 0.48) 0%,
-      transparent 60%
+      rgba(11, 18, 32, 0.58) 0%,
+      rgba(11, 18, 32, 0.12) 55%,
+      transparent 100%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.10) 0%,
+      rgba(34, 211, 238, 0.025) 42%,
+      transparent 70%
     ),
     var(--category-hero-image);
+
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -103,12 +115,18 @@
 .category-hero-overlay {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  background: transparent;
+  z-index: 1;
+  background: linear-gradient(
+    135deg,
+    rgba(34, 211, 238, 0.045),
+    transparent 48%
+  );
   pointer-events: none;
 }
 
-/* HERO BREADCRUMB */
+/* =========================================================
+   HERO BREADCRUMB
+========================================================= */
 
 .category-hero > .category-breadcrumb {
   position: absolute;
@@ -123,7 +141,7 @@
   max-width: none;
   margin: 0;
   padding: 20px clamp(22px, 7vw, 100px);
-  color: rgba(255, 253, 248, 0.76);
+  color: rgba(241, 245, 249, 0.76);
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.09em;
@@ -136,7 +154,7 @@
 }
 
 .category-hero > .category-breadcrumb a:hover {
-  color: var(--category-white);
+  color: var(--category-gold);
 }
 
 .category-breadcrumb-separator {
@@ -167,8 +185,6 @@
   text-align: left;
 }
 
-/* CATEGORY LABEL */
-
 .category-hero-side-label {
   display: flex;
   align-items: center;
@@ -178,7 +194,7 @@
   width: 100%;
   margin: 0 0 24px;
   padding: 0;
-  color: rgba(255, 253, 248, 0.84);
+  color: rgba(241, 245, 249, 0.84);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -194,12 +210,13 @@
   height: 7px;
   border-radius: 50%;
   background: var(--category-red);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.5);
 }
 
 .category-hero-index {
   display: inline-block;
   margin-left: 8px;
-  color: rgba(255, 253, 248, 0.62);
+  color: rgba(241, 245, 249, 0.62);
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.16em;
@@ -223,8 +240,6 @@
 .category-hero-copy > * {
   text-align: left;
 }
-
-/* EYEBROW */
 
 .category-eyebrow {
   display: flex;
@@ -260,14 +275,12 @@
   animation: categoryHeadingEnter 0.8s 0.12s ease-out both;
 }
 
-/* HERO INTRO */
-
 .category-hero-bio {
   width: 100%;
   max-width: 490px;
   margin: 0 0 10px;
   padding: 0;
-  color: rgba(255, 253, 248, 0.95);
+  color: rgba(241, 245, 249, 0.95);
   font-size: clamp(15px, 1.3vw, 18px);
   font-weight: 500;
   line-height: 1.65;
@@ -279,7 +292,7 @@
   max-width: 480px;
   margin: 0;
   padding: 0;
-  color: rgba(255, 253, 248, 0.8);
+  color: rgba(241, 245, 249, 0.8);
   font-size: 13px;
   font-weight: 400;
   line-height: 1.85;
@@ -333,7 +346,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  color: rgba(255, 253, 248, 0.74);
+  color: rgba(241, 245, 249, 0.74);
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.15em;
@@ -434,6 +447,7 @@
 
 /* =========================================================
    ARTICLE GRID
+   Three articles per row on desktop
 ========================================================= */
 
 .category-article-grid {
@@ -442,11 +456,6 @@
   align-items: stretch;
   gap: 42px 26px;
 }
-
-/*
-  Each card fills its grid row.
-  Flex layout keeps the article buttons aligned.
-*/
 
 .category-article-card {
   display: flex;
@@ -469,11 +478,10 @@
   isolation: isolate;
   flex: 0 0 auto;
   width: 100%;
-  height: auto;
   min-width: 0;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: #e7e4dd;
+  background: #17243A;
 }
 
 .category-article-image img {
@@ -485,29 +493,31 @@
   max-width: none;
   object-fit: cover;
   object-position: center;
-  transition: transform 0.7s var(--category-ease);
+  filter: saturate(0.92) contrast(1.02);
+  transform: scale(1);
+  transition:
+    transform 0.7s var(--category-ease),
+    filter 0.35s ease;
 }
 
 .category-article-image.image-variant-0,
 .category-article-image.image-variant-1,
 .category-article-image.image-variant-2 {
   width: 100%;
-  height: auto;
   aspect-ratio: 4 / 3;
 }
 
 .category-article-card:hover .category-article-image img {
   transform: scale(1.045);
+  filter: saturate(1) contrast(1.04);
 }
-
-/* IMAGE FALLBACK */
 
 .category-image-mark {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  color: rgba(17, 17, 15, 0.35);
+  color: rgba(241, 245, 249, 0.35);
   font-size: clamp(28px, 4vw, 52px);
   font-weight: 800;
   letter-spacing: -0.08em;
@@ -524,10 +534,10 @@
   place-items: center;
   width: 42px;
   height: 42px;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(241, 245, 249, 0.42);
   border-radius: 50%;
-  background: rgba(17, 17, 15, 0.8);
-  color: white;
+  background: rgba(11, 18, 32, 0.88);
+  color: var(--category-white);
   opacity: 0;
   transform: translate(-5px, 5px);
   transition:
@@ -541,6 +551,7 @@
   opacity: 1;
   transform: translate(0, 0);
   background: var(--category-red);
+  color: #0B1220;
 }
 
 /* =========================================================
@@ -600,6 +611,7 @@
 
 /* =========================================================
    READ ARTICLE BUTTON
+   Close to description · Consistent alignment
 ========================================================= */
 
 .category-read-link {
@@ -609,22 +621,24 @@
   justify-content: center;
   align-self: flex-start;
   flex: 0 0 auto;
-  gap: 13px;
+  gap: 10px;
   width: fit-content;
   max-width: 100%;
   min-height: 44px;
-  margin-top: auto;
+  margin-top: 18px;
+  margin-bottom: 0;
   padding: 0 18px;
   overflow: hidden;
-  border: 1px solid var(--category-ink);
+  border: 1px solid var(--category-gold);
   border-radius: 3px;
-  background: var(--category-ink);
-  color: var(--category-white) !important;
+  background: var(--category-gold);
+  color: #0B1220 !important;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   line-height: 1.4;
   text-transform: uppercase;
+  white-space: nowrap;
   transition:
     color var(--category-transition),
     background var(--category-transition),
@@ -637,7 +651,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: var(--category-red);
+  background: var(--category-red-dark);
   content: "";
   transform: scaleX(0);
   transform-origin: left;
@@ -656,9 +670,9 @@
 }
 
 .category-read-link:hover {
-  border-color: var(--category-red);
-  color: white !important;
-  box-shadow: 0 7px 18px rgba(17, 17, 15, 0.12);
+  border-color: var(--category-red-dark);
+  color: #0B1220 !important;
+  box-shadow: 0 7px 22px rgba(34, 211, 238, 0.12);
   transform: translateY(-2px);
 }
 
@@ -676,8 +690,105 @@
 }
 
 .category-read-link:focus-visible {
-  outline: 2px solid var(--category-red);
+  outline: 2px solid var(--category-gold);
   outline-offset: 4px;
+}
+
+/* =========================================================
+   PAGINATION
+   Previous · Page Numbers · Next
+========================================================= */
+
+.category-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+  margin: 48px auto 0;
+  padding: 0;
+}
+
+.category-pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--category-line);
+  border-radius: 3px;
+  background: var(--category-card-bg);
+  color: var(--category-ink);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  transition:
+    color var(--category-transition),
+    background var(--category-transition),
+    border-color var(--category-transition),
+    transform var(--category-transition);
+}
+
+.category-pagination button:hover:not(:disabled) {
+  border-color: var(--category-gold);
+  background: rgba(34, 211, 238, 0.09);
+  color: var(--category-gold);
+}
+
+.category-pagination button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.category-pagination button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.category-pagination-previous,
+.category-pagination-next {
+  white-space: nowrap;
+}
+
+.category-pagination-back-icon {
+  transform: rotate(180deg);
+}
+
+.category-pagination-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.category-pagination .category-page-number {
+  min-width: 42px;
+  padding: 0 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.category-pagination .category-page-number.active {
+  border-color: var(--category-gold);
+  background: var(--category-gold);
+  color: #0B1220;
+}
+
+.category-pagination .category-page-number.active:hover {
+  border-color: var(--category-gold);
+  background: var(--category-gold);
+  color: #0B1220;
+}
+
+.category-pagination-summary {
+  margin: 18px 0 0;
+  color: var(--category-muted);
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: center;
 }
 
 /* =========================================================
@@ -739,10 +850,10 @@
   min-height: 42px;
   margin-top: 8px;
   padding: 0 16px;
-  border: 1px solid var(--category-ink);
+  border: 1px solid var(--category-red);
   border-radius: 3px;
-  background: var(--category-ink);
-  color: white;
+  background: var(--category-red);
+  color: #0B1220;
   cursor: pointer;
   font-size: 10px;
   font-weight: 700;
@@ -754,8 +865,8 @@
 }
 
 .category-retry:hover {
-  border-color: var(--category-red);
-  background: var(--category-red);
+  border-color: var(--category-red-dark);
+  background: var(--category-red-dark);
 }
 
 .category-empty-mark {
@@ -766,7 +877,7 @@
 }
 
 /* =========================================================
-   EDITORIAL PROMISE SECTION
+   EDITORIAL PROMISE
 ========================================================= */
 
 .category-promise {
@@ -883,6 +994,80 @@
 }
 
 /* =========================================================
+   CATEGORY-SPECIFIC HERO TREATMENT
+========================================================= */
+
+.category-hero-reviews {
+  --category-hero-shade: 0.06;
+}
+
+.category-hero-best {
+  --category-hero-shade: 0.04;
+}
+
+.category-hero-versus {
+  --category-hero-shade: 0.07;
+}
+
+.category-hero-worst {
+  --category-hero-shade: 0.10;
+}
+
+.category-hero-technology {
+  --category-hero-shade: 0.04;
+}
+
+.category-hero-ai-software {
+  --category-hero-shade: 0.06;
+}
+
+.category-hero-home {
+  --category-hero-shade: 0.03;
+}
+
+.category-hero-cars {
+  --category-hero-shade: 0.04;
+}
+
+.category-hero-lifestyle {
+  --category-hero-shade: 0.04;
+}
+
+.category-hero-beauty {
+  --category-hero-shade: 0.04;
+}
+
+.category-hero-fashion {
+  --category-hero-shade: 0.04;
+}
+
+.category-hero-travel {
+  --category-hero-shade: 0.03;
+}
+
+.category-hero-how-to {
+  --category-hero-shade: 0.04;
+}
+
+.category-hero::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(9, 16, 29, var(--category-hero-shade));
+  content: "";
+  pointer-events: none;
+}
+
+.category-hero > .category-breadcrumb {
+  z-index: 3;
+}
+
+.category-hero-content,
+.category-hero-bottom {
+  z-index: 2;
+}
+
+/* =========================================================
    TABLET — UP TO 1024PX
 ========================================================= */
 
@@ -930,19 +1115,27 @@
     height: 500px;
     min-height: 500px;
     max-height: 500px;
+
     background-image:
       linear-gradient(
         90deg,
-        rgba(9, 10, 10, 0.92) 0%,
-        rgba(9, 10, 10, 0.72) 55%,
-        rgba(9, 10, 10, 0.42) 100%
+        rgba(9, 16, 29, 0.95) 0%,
+        rgba(9, 16, 29, 0.80) 48%,
+        rgba(9, 16, 29, 0.50) 100%
       ),
       linear-gradient(
         0deg,
-        rgba(9, 10, 10, 0.4) 0%,
-        transparent 60%
+        rgba(11, 18, 32, 0.60) 0%,
+        rgba(11, 18, 32, 0.08) 65%,
+        transparent 100%
+      ),
+      linear-gradient(
+        135deg,
+        rgba(34, 211, 238, 0.08) 0%,
+        transparent 62%
       ),
       var(--category-hero-image);
+
     background-position: center center;
     background-size: cover;
   }
@@ -1032,6 +1225,19 @@
     opacity: 1;
     transform: none;
   }
+
+  .category-pagination {
+    gap: 9px;
+    margin-top: 38px;
+  }
+
+  .category-pagination button {
+    min-height: 42px;
+  }
+
+  .category-pagination-numbers {
+    gap: 6px;
+  }
 }
 
 /* =========================================================
@@ -1048,17 +1254,12 @@
     aspect-ratio: 4 / 3;
   }
 
-  /*
-    On small screens, each card uses its natural height.
-    Buttons remain below their respective article descriptions.
-  */
-
   .category-article-card {
     height: auto;
   }
 
   .category-article-card .category-read-link {
-    margin-top: 20px;
+    margin-top: 18px;
   }
 
   .category-article-card h3 {
@@ -1071,6 +1272,41 @@
 
   .category-article-meta {
     font-size: 9px;
+  }
+
+  .category-pagination {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: stretch;
+    gap: 12px;
+  }
+
+  .category-pagination-previous {
+    justify-self: start;
+  }
+
+  .category-pagination-next {
+    justify-self: end;
+  }
+
+  .category-pagination-numbers {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    justify-content: center;
+  }
+
+  .category-pagination-previous,
+  .category-pagination-next {
+    grid-row: 2;
+  }
+
+  .category-pagination button {
+    min-width: 42px;
+    padding: 0 12px;
+  }
+
+  .category-pagination-summary {
+    font-size: 10px;
   }
 }
 
@@ -1270,6 +1506,25 @@
     padding-left: 12px;
     font-size: 8px;
   }
+
+  .category-pagination {
+    column-gap: 8px;
+  }
+
+  .category-pagination button {
+    min-width: 38px;
+    padding: 0 9px;
+    font-size: 10px;
+  }
+
+  .category-pagination-numbers {
+    gap: 5px;
+  }
+
+  .category-pagination .category-page-number {
+    min-width: 36px;
+    padding: 0 7px;
+  }
 }
 
 /* =========================================================
@@ -1291,11 +1546,159 @@
   .category-read-link::before,
   .category-read-link .category-read-arrow,
   .category-promise > a,
-  .category-home-link {
+  .category-home-link,
+  .category-pagination button {
     transition: none !important;
   }
 
   .category-article-card:hover .category-article-image img {
     transform: none;
+  }
+}
+
+
+
+/* =========================================================
+   ARTICLE CARD ALIGNMENT — ALL CATEGORY PAGES
+   Keeps every READ ARTICLE button aligned in each row
+========================================================= */
+
+.category-article-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 42px 26px;
+}
+
+.category-article-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+  min-width: 0;
+}
+
+/* Keep article titles consistent and descriptions readable */
+.category-article-card h3 {
+  flex: 0 0 auto;
+  margin: 11px 0 10px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.category-article-card > p {
+  flex: 0 0 auto;
+  margin: 0 0 22px;
+  line-height: 1.85;
+}
+
+/* Attach the button neatly beneath the article description */
+.category-article-card .category-read-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  flex: 0 0 auto;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
+  margin-top: auto;
+}
+
+/* Tablet: two cards per row */
+@media (max-width: 1024px) {
+  .category-article-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 38px 24px;
+  }
+}
+
+/* Mobile: one card per row */
+@media (max-width: 600px) {
+  .category-article-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+  }
+
+  .category-article-card {
+    height: auto;
+  }
+
+  .category-article-card > p {
+    margin-bottom: 0;
+  }
+
+  .category-article-card .category-read-link {
+    margin-top: 20px;
+  }
+}
+
+
+
+/* =========================================================
+   CATEGORY PAGE — HOMEPAGE REVIEW CARD ALIGNMENT
+   Uses the same ReviewCard component as the homepage.
+========================================================= */
+
+.category-page .category-article-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 22px 28px;
+}
+
+/* Wrapper must not override the homepage card design */
+.category-page .category-article-item {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+}
+
+.category-page .category-article-item > .review-card {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+}
+
+/* Keep the homepage card image proportions */
+.category-page .category-article-item .review-image-wrap {
+  aspect-ratio: 1.32 / 1;
+}
+
+/* Keep card content consistent across each row */
+.category-page .category-article-item .review-card-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Align the action buttons when descriptions vary in length */
+.category-page .category-article-item .card-read-link {
+  margin-top: auto;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .category-page .category-article-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .category-page .category-article-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .category-page .category-article-item .review-card,
+  .category-page .category-article-item .review-image,
+  .category-page .category-article-item .card-read-link {
+    transition: none !important;
   }
 }
